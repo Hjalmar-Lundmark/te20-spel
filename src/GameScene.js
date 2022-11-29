@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
 
 import ScoreLabel from './ScoreLabel'
+import AimLabelX from './AimLabelX'
+
 import BombSpawner from './BombSpawner'
 
 
@@ -11,6 +13,7 @@ const BOMB_KEY = 'bomb'
 let aimTime = true
 let throwX = 0
 let throwY = 0
+let throwV = 10
 
 
 export default class GameScene extends Phaser.Scene {
@@ -20,7 +23,8 @@ export default class GameScene extends Phaser.Scene {
         this.player = undefined
         this.cursors = undefined
         this.scoreLabel = undefined
-        this.stars = undefined
+        this.aimLabelX = undefined
+		this.stars = undefined
         this.bombSpawner = undefined
 
         this.gameOver = false
@@ -43,9 +47,11 @@ export default class GameScene extends Phaser.Scene {
 
 		const platforms = this.createPlatforms()
 		this.player = this.createPlayer()
+		this.player.anims.play('turn')
         this.stars = this.createStars()
 
-        this.scoreLabel = this.createScoreLabel(16, 555, 0)
+        this.scoreLabel = this.createScoreLabel(16, 16, 0)
+		this.aimLabelX = this.createScoreLabel(16, 555, throwX)
 
         this.bombSpawner = new BombSpawner(this, BOMB_KEY)
         const bombsGroup = this.bombSpawner.group
@@ -69,58 +75,38 @@ export default class GameScene extends Phaser.Scene {
 		}
 
 		if (aimTime) {
-		
-		/*	if (this.cursors.left.isDown)
-		{
-			this.player.setVelocityX(-160)
-
-			this.player.anims.play('left', true)
-		}
-		else if (this.cursors.right.isDown)
-		{
-			this.player.setVelocityX(160)
-
-			this.player.anims.play('right', true)
-		}
-		else
-		{
-			this.player.setVelocityX(0)
-
-			this.player.anims.play('turn')
-		}
-
-		if (this.cursors.up.isDown && this.player.body.touching.down)
-		{
-			this.player.setVelocityY(-330)
-		}*/
-
 			if (this.cursors.right.isDown) {
-				throwX += 5
+				throwX += throwV
+				this.aimLabelX.add(10)
 			}
 			if (this.cursors.left.isDown) {
-				throwX -= 5
+				throwX -= throwV
+				this.aimLabelX.add(-10)
 			}
 			if (this.cursors.down.isDown) {
-				throwY += 5
+				throwY += throwV
+			
 			}
-			if (this.cursors.right.isDown) {
-				throwY -= 5
+			if (this.cursors.up.isDown) {
+				throwY -= throwV
 			}
 
 			if (/*Buttonpress */ this.cursors.space.isDown) {
 				//Shoot
 				this.bombSpawner.spawn(this.player.x, this.player.y, throwX, throwY)
 				aimTime = false
+
+				// start BombTimer() ?
 			}
 		}
 	}
 
     createStars()
 	{
-		const stars = this.physics.add.group({
+		const stars = this.physics.add.staticGroup({
 			key: STAR_KEY,
 			//repeat: 11,
-			setXY: { x: 12, y: 0/*, stepX: 70*/}
+			setXY: { x: (Phaser.Math.Between(50, 750)), y: (Phaser.Math.Between(120, 500))/*, stepX: 70*/}
 		})
 
 		return stars
@@ -136,11 +122,9 @@ export default class GameScene extends Phaser.Scene {
 		{
 			//  A new batch of stars to collect
 			this.stars.children.iterate((child) => {
-				child.enableBody(true, child.x, 0, true, true)
+				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 500)), true, true)
 			})
 		}
-
-		this.bombSpawner.spawn(player.x)
 	}
 
 
@@ -155,8 +139,8 @@ export default class GameScene extends Phaser.Scene {
 
     createPlayer()
 	{
-		const player = this.physics.add.sprite(100, 450, DUDE_KEY)
-		player.setBounce(0.2)
+		const player = this.physics.add.sprite(100, 510, DUDE_KEY)
+		player.setBounce(0)
 		player.setCollideWorldBounds(true)
 
 		this.anims.create({
@@ -202,6 +186,10 @@ export default class GameScene extends Phaser.Scene {
 		player.anims.play('turn')
 
 		this.gameOver = true
+	}
+
+	bombTimer() {
+		
 	}
 
 }
