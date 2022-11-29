@@ -8,9 +8,12 @@ const GROUND_KEY = 'ground'
 const DUDE_KEY = 'dude'
 const STAR_KEY = 'star'
 const BOMB_KEY = 'bomb'
+let aimTime = true
+let throwX = 0
+let throwY = 0
 
 
-export default class HelloWorldScene extends Phaser.Scene {
+export default class GameScene extends Phaser.Scene {
 	constructor() {
 		super('hello-world')
 
@@ -42,7 +45,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.player = this.createPlayer()
         this.stars = this.createStars()
 
-        this.scoreLabel = this.createScoreLabel(16, 16, 0)
+        this.scoreLabel = this.createScoreLabel(16, 555, 0)
 
         this.bombSpawner = new BombSpawner(this, BOMB_KEY)
         const bombsGroup = this.bombSpawner.group
@@ -50,9 +53,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.physics.add.collider(this.player, platforms)
         this.physics.add.collider(this.stars, platforms)
 		this.physics.add.collider(bombsGroup, platforms)
-        this.physics.add.collider(this.player, bombsGroup, this.hitBomb, null, this)
+        //this.physics.add.collider(this.player, bombsGroup, this.hitBomb, null, this)
 
-		this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this)
+		this.physics.add.overlap(this.bombSpawner.group, this.stars, this.collectStar, null, this)
 
         this.cursors = this.input.keyboard.createCursorKeys()
 
@@ -65,7 +68,9 @@ export default class HelloWorldScene extends Phaser.Scene {
 			return
 		}
 
-		if (this.cursors.left.isDown)
+		if (aimTime) {
+		
+		/*	if (this.cursors.left.isDown)
 		{
 			this.player.setVelocityX(-160)
 
@@ -87,6 +92,26 @@ export default class HelloWorldScene extends Phaser.Scene {
 		if (this.cursors.up.isDown && this.player.body.touching.down)
 		{
 			this.player.setVelocityY(-330)
+		}*/
+
+			if (this.cursors.right.isDown) {
+				throwX += 5
+			}
+			if (this.cursors.left.isDown) {
+				throwX -= 5
+			}
+			if (this.cursors.down.isDown) {
+				throwY += 5
+			}
+			if (this.cursors.right.isDown) {
+				throwY -= 5
+			}
+
+			if (/*Buttonpress */ this.cursors.space.isDown) {
+				//Shoot
+				this.bombSpawner.spawn(this.player.x, this.player.y, throwX, throwY)
+				aimTime = false
+			}
 		}
 	}
 
@@ -94,12 +119,8 @@ export default class HelloWorldScene extends Phaser.Scene {
 	{
 		const stars = this.physics.add.group({
 			key: STAR_KEY,
-			repeat: 11,
-			setXY: { x: 12, y: 0, stepX: 70 }
-		})
-		
-		stars.children.iterate((child) => {
-			child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
+			//repeat: 11,
+			setXY: { x: 12, y: 0/*, stepX: 70*/}
 		})
 
 		return stars
@@ -128,9 +149,6 @@ export default class HelloWorldScene extends Phaser.Scene {
 		const platforms = this.physics.add.staticGroup()
 
 		platforms.create(400, 568, GROUND_KEY).setScale(2).refreshBody()
-	
-		platforms.create(600, 400, GROUND_KEY)
-		platforms.create(50, 250, GROUND_KEY)
 
         return platforms
 	}
@@ -167,7 +185,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
     createScoreLabel(x, y, score)
 	{
-		const style = { fontSize: '32px', fill: '#000' }
+		const style = { fontSize: '32px', fill: '#FFF' }
 		const label = new ScoreLabel(this, x, y, score, style)
 
 		this.add.existing(label)
