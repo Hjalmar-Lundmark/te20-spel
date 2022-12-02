@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 
 import ScoreLabel from './ScoreLabel'
 import AimLabelX from './AimLabelX'
+import AimLabelY from './AimLabelY'
 
 import BombSpawner from './BombSpawner'
 
@@ -14,7 +15,7 @@ let aimTime = true
 let throwX = 0
 let throwY = 0
 let throwV = 10
-
+let shots = 0
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -24,8 +25,10 @@ export default class GameScene extends Phaser.Scene {
         this.cursors = undefined
         this.scoreLabel = undefined
         this.aimLabelX = undefined
+		this.aimLabelY = undefined
 		this.stars = undefined
         this.bombSpawner = undefined
+		this.aimer = undefined
 
         this.gameOver = false
 	}
@@ -51,7 +54,8 @@ export default class GameScene extends Phaser.Scene {
         this.stars = this.createStars()
 
         this.scoreLabel = this.createScoreLabel(16, 16, 0)
-		this.aimLabelX = this.createScoreLabel(16, 555, throwX)
+		this.aimLabelX = this.createAimLabel(16, 555, throwX)
+		this.aimLabelY = this.createAimLabel2(550, 555, throwY)
 
         this.bombSpawner = new BombSpawner(this, BOMB_KEY)
         const bombsGroup = this.bombSpawner.group
@@ -76,27 +80,50 @@ export default class GameScene extends Phaser.Scene {
 
 		if (aimTime) {
 			if (this.cursors.right.isDown) {
+				if (throwX < 1000) {
 				throwX += throwV
 				this.aimLabelX.add(10)
+				//this.deleteStar(this.aimer)
+				this.aimer = this.createAimer2()
+				}
 			}
 			if (this.cursors.left.isDown) {
+				if (throwX > -1000) {
 				throwX -= throwV
 				this.aimLabelX.add(-10)
+				//this.deleteStar(this.stars)
+				this.aimer = this.createAimer2()
+				}
 			}
 			if (this.cursors.down.isDown) {
+				if (throwY < 1000) {
 				throwY += throwV
-			
+				this.aimLabelY.add(10)
+				//this.deleteStar(this.stars)
+				this.aimer = this.createAimer2()
+				}
 			}
 			if (this.cursors.up.isDown) {
+				if (throwY > -1000) {
 				throwY -= throwV
+				this.aimLabelY.add(-10)
+				//this.deleteStar(this.stars)
+				this.aimer = this.createAimer2()
+				}
 			}
 
-			if (/*Buttonpress */ this.cursors.space.isDown) {
+			if (this.cursors.space.isDown) {
 				//Shoot
 				this.bombSpawner.spawn(this.player.x, this.player.y, throwX, throwY)
 				aimTime = false
+				shots += 1
 
-				// start BombTimer() ?
+				// start BombTimer() ???
+			}
+		} else if (!aimTime) {
+			if (this.cursors.shift.isDown) {
+				
+				aimTime = true;
 			}
 		}
 	}
@@ -112,12 +139,23 @@ export default class GameScene extends Phaser.Scene {
 		return stars
 	}
 
+	createAimer2()
+	{
+		const sight = this.physics.add.staticGroup({
+			key: STAR_KEY,
+			repeat: 4,
+			setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
+		})
+
+		return sight
+	}
+
     collectStar(player, star)
 	{
 		star.disableBody(true, true)
 
         this.scoreLabel.add(10)
-
+		
         if (this.stars.countActive(true) === 0)
 		{
 			//  A new batch of stars to collect
@@ -127,6 +165,10 @@ export default class GameScene extends Phaser.Scene {
 		}
 	}
 
+	deleteStar(star)
+	{
+		star.disableBody(true, true)
+	}
 
 	createPlatforms()
 	{
@@ -177,6 +219,26 @@ export default class GameScene extends Phaser.Scene {
 		return label
 	}
 
+	createAimLabel(x, y, score)
+	{
+		const style = { fontSize: '32px', fill: '#FFF' }
+		const label = new AimLabelX(this, x, y, score, style)
+
+		this.add.existing(label)
+
+		return label
+	}
+
+	createAimLabel2(x, y, score)
+	{
+		const style = { fontSize: '32px', fill: '#FFF' }
+		const label = new AimLabelY(this, x, y, score, style)
+
+		this.add.existing(label)
+
+		return label
+	}
+
     hitBomb(player, bomb)
 	{
 		this.physics.pause()
@@ -190,6 +252,15 @@ export default class GameScene extends Phaser.Scene {
 
 	bombTimer() {
 		
+	}
+
+	createAimer() {
+		const aiming = this.physics.add.staticGroup()
+
+		aiming.create(200, 200, GROUND_KEY).setScale(0.2)
+		aiming.rotate(10)
+
+        return aiming
 	}
 
 }

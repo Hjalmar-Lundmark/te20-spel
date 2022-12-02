@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
 
-const formatScore2 = (score) => `VX: ${score}`
+const formatScore2 = (score) => `VY: ${score}`
 
-export default class AimLabelX extends Phaser.GameObjects.Text
+export default class AimLabelY extends Phaser.GameObjects.Text
 {
 	constructor(scene, x, y, score, style)
 	{
