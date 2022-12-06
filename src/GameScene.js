@@ -16,7 +16,7 @@ let throwX = 0
 let throwY = 0
 let throwV = 10
 let shots = 0
-let balltime = 400;
+let balltime = 5450;
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -120,18 +120,25 @@ export default class GameScene extends Phaser.Scene {
 				aimTime = false
 				shots += 1
 
-				balltime = 400;
-				// start BombTimer() ???
+				balltime = 450;
 			}
 		} else if (!aimTime) {
+			this.aimer.setTint(0x96969F)
 			if (balltime > 0) {
 				balltime = balltime -1
-				} else if (balltime <= 0) {
-					this.bombSpawner.group.clear(true);
-					aimTime = true;
-				}
+			} else if (balltime <= 0) {
+				this.bombSpawner.group.clear(true);
+				aimTime = true;
+				this.aimer.setTint(0x00ff00);
+			}
+
+			//Dev
+			if (this.cursors.shift.isDown) {
+				this.bombSpawner.group.clear(true);
+				aimTime = true;
+				this.aimer.setTint(0x00ff00);
+			}
 		}
-		//Tint på aim???????
 	}
 
     createStars()
@@ -139,7 +146,7 @@ export default class GameScene extends Phaser.Scene {
 		const stars = this.physics.add.staticGroup({
 			key: STAR_KEY,
 			//repeat: 11,
-			setXY: { x: (Phaser.Math.Between(50, 750)), y: (Phaser.Math.Between(120, 500))/*, stepX: 70*/}
+			setXY: { x: (Phaser.Math.Between(50, 750)), y: (Phaser.Math.Between(120, 530))/*, stepX: 70*/}
 		})
 
 		return stars
@@ -250,10 +257,6 @@ export default class GameScene extends Phaser.Scene {
 		player.anims.play('turn')
 
 		this.gameOver = true
-	}
-
-	bombTimer() {
-		
 	}
 
 }
