@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-const formatScore = (score) => `Score: ${score}`
+const formatScore = (score) => `ArrowKeys to aim | Space to shoot | Score: ${score}`
 
 export default class ScoreLabel extends Phaser.GameObjects.Text
 {

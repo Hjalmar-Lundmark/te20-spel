@@ -16,6 +16,7 @@ let throwX = 0
 let throwY = 0
 let throwV = 10
 let shots = 0
+let balltime = 400;
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -52,6 +53,7 @@ export default class GameScene extends Phaser.Scene {
 		this.player = this.createPlayer()
 		this.player.anims.play('turn')
         this.stars = this.createStars()
+		this.aimer = this.createAimer()
 
         this.scoreLabel = this.createScoreLabel(16, 16, 0)
 		this.aimLabelX = this.createAimLabel(16, 555, throwX)
@@ -83,32 +85,32 @@ export default class GameScene extends Phaser.Scene {
 				if (throwX < 1000) {
 				throwX += throwV
 				this.aimLabelX.add(10)
-				//this.deleteStar(this.aimer)
-				this.aimer = this.createAimer2()
+				this.aimer.clear(true);
+				this.aimer = this.createAimer()
 				}
 			}
 			if (this.cursors.left.isDown) {
 				if (throwX > -1000) {
 				throwX -= throwV
 				this.aimLabelX.add(-10)
-				//this.deleteStar(this.stars)
-				this.aimer = this.createAimer2()
+				this.aimer.clear(true);
+				this.aimer = this.createAimer()
 				}
 			}
 			if (this.cursors.down.isDown) {
 				if (throwY < 1000) {
 				throwY += throwV
 				this.aimLabelY.add(10)
-				//this.deleteStar(this.stars)
-				this.aimer = this.createAimer2()
+				this.aimer.clear(true);
+				this.aimer = this.createAimer()
 				}
 			}
 			if (this.cursors.up.isDown) {
 				if (throwY > -1000) {
 				throwY -= throwV
 				this.aimLabelY.add(-10)
-				//this.deleteStar(this.stars)
-				this.aimer = this.createAimer2()
+				this.aimer.clear(true);
+				this.aimer = this.createAimer()
 				}
 			}
 
@@ -118,14 +120,18 @@ export default class GameScene extends Phaser.Scene {
 				aimTime = false
 				shots += 1
 
+				balltime = 400;
 				// start BombTimer() ???
 			}
 		} else if (!aimTime) {
-			if (this.cursors.shift.isDown) {
-				
-				aimTime = true;
-			}
+			if (balltime > 0) {
+				balltime = balltime -1
+				} else if (balltime <= 0) {
+					this.bombSpawner.group.clear(true);
+					aimTime = true;
+				}
 		}
+		//Tint på aim???????
 	}
 
     createStars()
@@ -139,7 +145,7 @@ export default class GameScene extends Phaser.Scene {
 		return stars
 	}
 
-	createAimer2()
+	createAimer()
 	{
 		const sight = this.physics.add.staticGroup({
 			key: STAR_KEY,
@@ -150,8 +156,9 @@ export default class GameScene extends Phaser.Scene {
 		return sight
 	}
 
-    collectStar(player, star)
+    collectStar(playerAAA, star)
 	{
+		//playerAAA.disableBody(true, true)
 		star.disableBody(true, true)
 
         this.scoreLabel.add(10)
@@ -163,11 +170,6 @@ export default class GameScene extends Phaser.Scene {
 				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 500)), true, true)
 			})
 		}
-	}
-
-	deleteStar(star)
-	{
-		star.disableBody(true, true)
 	}
 
 	createPlatforms()
@@ -211,7 +213,7 @@ export default class GameScene extends Phaser.Scene {
 
     createScoreLabel(x, y, score)
 	{
-		const style = { fontSize: '32px', fill: '#FFF' }
+		const style = { fontSize: '24px', fill: '#FFF' }
 		const label = new ScoreLabel(this, x, y, score, style)
 
 		this.add.existing(label)
@@ -252,15 +254,6 @@ export default class GameScene extends Phaser.Scene {
 
 	bombTimer() {
 		
-	}
-
-	createAimer() {
-		const aiming = this.physics.add.staticGroup()
-
-		aiming.create(200, 200, GROUND_KEY).setScale(0.2)
-		aiming.rotate(10)
-
-        return aiming
 	}
 
 }
