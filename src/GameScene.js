@@ -16,7 +16,7 @@ let throwX = 0
 let throwY = 0
 let throwV = 10
 let shots = 0
-let balltime = 5450;
+let balltime = 450;
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -39,7 +39,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('sky', 'assets/sky.png');
     this.load.image(GROUND_KEY, 'assets/platform.png');
     this.load.image(STAR_KEY, 'assets/star.png')
-    this.load.image(BOMB_KEY, 'assets/bomb.png')
+    this.load.image(BOMB_KEY, 'assets/snowball.png')
 
 
     this.load.spritesheet(DUDE_KEY, 'assets/dude.png', { frameWidth: 32, frameHeight: 48 } )
@@ -174,7 +174,7 @@ export default class GameScene extends Phaser.Scene {
 		{
 			//  A new batch of stars to collect
 			this.stars.children.iterate((child) => {
-				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 500)), true, true)
+				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 530)), true, true);
 			})
 		}
 	}
