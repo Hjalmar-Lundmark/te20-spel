@@ -16,7 +16,9 @@ let throwX = 0
 let throwY = 0
 let throwV = 10
 let shots = 0
+let starstaken = 0;
 let balltime = 450;
+let starSize = 2.0;
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -36,7 +38,7 @@ export default class GameScene extends Phaser.Scene {
 
 	preload() 
     {
-    this.load.image('sky', 'assets/sky.png');
+    this.load.image('sky', 'assets/Background2.png');
     this.load.image(GROUND_KEY, 'assets/platform.png');
     this.load.image(STAR_KEY, 'assets/star.png')
     this.load.image(BOMB_KEY, 'assets/snowball.png')
@@ -47,7 +49,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
 	create() {
-		this.add.image(400, 300, 'sky')
+		this.add.image(400, 280, 'sky').setScale(1.1);
 
 		const platforms = this.createPlatforms()
 		this.player = this.createPlayer()
@@ -145,7 +147,7 @@ export default class GameScene extends Phaser.Scene {
 	{
 		const stars = this.physics.add.staticGroup({
 			key: STAR_KEY,
-			//repeat: 11,
+			//repeat: 1,
 			setXY: { x: (Phaser.Math.Between(50, 750)), y: (Phaser.Math.Between(120, 530))/*, stepX: 70*/}
 		})
 
@@ -169,12 +171,13 @@ export default class GameScene extends Phaser.Scene {
 		star.disableBody(true, true)
 
         this.scoreLabel.add(10)
+		starSize -= 0.1;
 		
         if (this.stars.countActive(true) === 0)
 		{
 			//  A new batch of stars to collect
 			this.stars.children.iterate((child) => {
-				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 530)), true, true);
+				child.enableBody(true, Phaser.Math.Between(50, 750), (Phaser.Math.Between(120, 530)), true, true)/*.setScale(starSize) */;
 			})
 		}
 	}
@@ -183,7 +186,7 @@ export default class GameScene extends Phaser.Scene {
 	{
 		const platforms = this.physics.add.staticGroup()
 
-		platforms.create(400, 568, GROUND_KEY).setScale(2).refreshBody()
+		platforms.create(400, 568, GROUND_KEY).setScale(2).refreshBody();
 
         return platforms
 	}
