@@ -44,8 +44,14 @@ export default class GameScene extends Phaser.Scene {
     this.load.image(BOMB_KEY, 'assets/snowball.png')
 
 
-    this.load.spritesheet(DUDE_KEY, 'assets/dude.png', { frameWidth: 32, frameHeight: 48 } )
+    this.load.spritesheet(DUDE_KEY, 'assets/penguinAnimation2.png', { frameWidth: 32, frameHeight: 48 } )
 
+	/*this.load.atlas(
+		DUDE_KEY,
+		'assets/penguinAnimation.png',
+		'assets/penguinAnimation.json'
+	);
+	*/
     }
 
 	create() {
@@ -53,7 +59,7 @@ export default class GameScene extends Phaser.Scene {
 
 		const platforms = this.createPlatforms()
 		this.player = this.createPlayer()
-		this.player.anims.play('turn')
+		//this.player.anims.play('turn')
         this.stars = this.createStars()
 		this.aimer = this.createAimer()
 
@@ -89,6 +95,8 @@ export default class GameScene extends Phaser.Scene {
 				this.aimLabelX.add(10)
 				this.aimer.clear(true);
 				this.aimer = this.createAimer()
+
+				//this.player = this.createPlayer();
 				}
 			}
 			if (this.cursors.left.isDown) {
@@ -122,7 +130,11 @@ export default class GameScene extends Phaser.Scene {
 				aimTime = false
 				shots += 1
 
-				balltime = 450;
+				//balltime = 450;
+				balltime = Math.abs(throwY)/3;
+				if (balltime < 100) {
+					balltime = 100;
+				}
 			}
 		} else if (!aimTime) {
 			this.aimer.setTint(0x96969F)
@@ -158,10 +170,12 @@ export default class GameScene extends Phaser.Scene {
 	{
 		const sight = this.physics.add.staticGroup({
 			key: STAR_KEY,
-			repeat: 4,
-			setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
+			repeat: 3,
+			//setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
+			setXY: { x: this.player.x + throwX/35, y: this.player.y + throwY/35, stepX: throwX/40, stepY: throwY/40}
 		})
 
+		//sight.setDepth(2);
 		return sight
 	}
 
@@ -188,6 +202,7 @@ export default class GameScene extends Phaser.Scene {
 
 		platforms.create(400, 568, GROUND_KEY).setScale(2).refreshBody();
 
+		//platforms.setDepth(0);
         return platforms
 	}
 
@@ -197,6 +212,7 @@ export default class GameScene extends Phaser.Scene {
 		player.setBounce(0)
 		player.setCollideWorldBounds(true)
 
+		/*
 		this.anims.create({
 			key: 'left',
 			frames: this.anims.generateFrameNumbers(DUDE_KEY, { start: 0, end: 3 }),
@@ -216,7 +232,9 @@ export default class GameScene extends Phaser.Scene {
 			frameRate: 10,
 			repeat: -1
 		})
+		*/
 
+		//player.setDepth(3);
         return player
 
 	}
@@ -257,7 +275,7 @@ export default class GameScene extends Phaser.Scene {
 
 		player.setTint(0xff0000)
 
-		player.anims.play('turn')
+		//player.anims.play('turn')
 
 		this.gameOver = true
 	}
