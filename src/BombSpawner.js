@@ -22,10 +22,11 @@ export default class BombSpawner
 	{
 		const bomb = this.group.create(x, y, this.key)
         bomb.setBounce(0.9)
-        bomb.setCollideWorldBounds(true)
+        bomb.setCollideWorldBounds(false)
 		//bomb.setVelocity(Phaser.Math.Between(-200, 200), 20)
 		bomb.setVelocity(vx, vy)
-		
+		bomb.setDepth(4);
+
 		return bomb
 	}
 }

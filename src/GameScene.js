@@ -11,6 +11,7 @@ const GROUND_KEY = 'ground'
 const DUDE_KEY = 'dude'
 const STAR_KEY = 'star'
 const BOMB_KEY = 'bomb'
+const BLOCK_KEY = 'block'
 let aimTime = true
 let throwX = 0
 let throwY = 0
@@ -32,6 +33,7 @@ export default class GameScene extends Phaser.Scene {
 		this.stars = undefined
         this.bombSpawner = undefined
 		this.aimer = undefined
+		this.blockade = undefined
 
         this.gameOver = false
 	}
@@ -42,9 +44,11 @@ export default class GameScene extends Phaser.Scene {
     this.load.image(GROUND_KEY, 'assets/platform.png');
     this.load.image(STAR_KEY, 'assets/star.png')
     this.load.image(BOMB_KEY, 'assets/snowball.png')
+	this.load.image(BLOCK_KEY, 'assets/platform2.png');
 
-
-    this.load.spritesheet(DUDE_KEY, 'assets/penguinAnimation2.png', { frameWidth: 32, frameHeight: 48 } )
+	this.load.image(DUDE_KEY, 'assets/penguinAnimation2.png');
+	
+    //this.load.spritesheet(DUDE_KEY, 'assets/penguinAnimation2.png', { frameWidth: 32, frameHeight: 48 } )
 
 	/*this.load.atlas(
 		DUDE_KEY,
@@ -62,6 +66,7 @@ export default class GameScene extends Phaser.Scene {
 		//this.player.anims.play('turn')
         this.stars = this.createStars()
 		this.aimer = this.createAimer()
+		this.blockade = this.createBlock();
 
         this.scoreLabel = this.createScoreLabel(16, 16, 0)
 		this.aimLabelX = this.createAimLabel(16, 555, throwX)
@@ -73,7 +78,8 @@ export default class GameScene extends Phaser.Scene {
 		this.physics.add.collider(this.player, platforms)
         this.physics.add.collider(this.stars, platforms)
 		this.physics.add.collider(bombsGroup, platforms)
-        //this.physics.add.collider(this.player, bombsGroup, this.hitBomb, null, this)
+		this.physics.add.collider(bombsGroup, this.blockade)
+		//this.physics.add.collider(this.player, bombsGroup, this.hitBomb, null, this)
 
 		this.physics.add.overlap(this.bombSpawner.group, this.stars, this.collectStar, null, this)
 
@@ -144,6 +150,9 @@ export default class GameScene extends Phaser.Scene {
 				this.bombSpawner.group.clear(true);
 				aimTime = true;
 				this.aimer.setTint(0x00ff00);
+				this.blockade.clear(true);
+				this.blockade = this.createBlock();
+				this.physics.add.collider(this.bombSpawner.group, this.blockade)
 			}
 
 			//Dev
@@ -151,6 +160,9 @@ export default class GameScene extends Phaser.Scene {
 				this.bombSpawner.group.clear(true);
 				aimTime = true;
 				this.aimer.setTint(0x00ff00);
+				this.blockade.clear(true);
+				this.blockade = this.createBlock();
+				this.physics.add.collider(this.bombSpawner.group, this.blockade)
 			}
 		}
 	}
@@ -170,12 +182,12 @@ export default class GameScene extends Phaser.Scene {
 	{
 		const sight = this.physics.add.staticGroup({
 			key: STAR_KEY,
-			repeat: 3,
-			//setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
-			setXY: { x: this.player.x + throwX/35, y: this.player.y + throwY/35, stepX: throwX/40, stepY: throwY/40}
+			repeat: 4,
+			setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
+			//setXY: { x: this.player.x + throwX/35, y: this.player.y + throwY/35, stepX: throwX/40, stepY: throwY/40}
 		})
 
-		//sight.setDepth(2);
+		sight.setDepth(2);
 		return sight
 	}
 
@@ -185,7 +197,6 @@ export default class GameScene extends Phaser.Scene {
 		star.disableBody(true, true)
 
         this.scoreLabel.add(10)
-		starSize -= 0.1;
 		
         if (this.stars.countActive(true) === 0)
 		{
@@ -204,6 +215,17 @@ export default class GameScene extends Phaser.Scene {
 
 		//platforms.setDepth(0);
         return platforms
+	}
+
+	createBlock()
+	{
+		const block = this.physics.add.staticGroup()
+
+		block.create(Phaser.Math.Between(30, 750), (Phaser.Math.Between(120, 450)), BLOCK_KEY).setScale(0.2).refreshBody();
+		block.rotate(Phaser.Math.Between(1, 5));
+		block.setTint(0xFF00FF);
+		block.setDepth(4);
+        return block;
 	}
 
     createPlayer()
@@ -234,7 +256,7 @@ export default class GameScene extends Phaser.Scene {
 		})
 		*/
 
-		//player.setDepth(3);
+		player.setDepth(3);
         return player
 
 	}
