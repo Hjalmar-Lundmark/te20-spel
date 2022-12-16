@@ -18,7 +18,7 @@ let throwX = 0
 let throwY = 0
 let throwV = 10
 let shots = 0
-let starstaken = 0;
+let starsTaken = 0;
 let balltime = 450;
 let starSize = 2.0;
 
@@ -101,17 +101,15 @@ export default class GameScene extends Phaser.Scene {
 				if (throwX < 1000) {
 				throwX += throwV
 				this.aimLabelX.add(10)
-				this.aimer.clear(true);
+				this.aimer.clear(true, true);
 				this.aimer = this.createAimer()
-
-				//this.player = this.createPlayer();
-				}
+			}
 			}
 			if (this.cursors.left.isDown) {
 				if (throwX > -1000) {
 				throwX -= throwV
 				this.aimLabelX.add(-10)
-				this.aimer.clear(true);
+				this.aimer.clear(true, true);
 				this.aimer = this.createAimer()
 				}
 			}
@@ -119,7 +117,7 @@ export default class GameScene extends Phaser.Scene {
 				if (throwY < 1000) {
 				throwY += throwV
 				this.aimLabelY.add(10)
-				this.aimer.clear(true);
+				this.aimer.clear(true, true);
 				this.aimer = this.createAimer()
 				}
 			}
@@ -127,7 +125,7 @@ export default class GameScene extends Phaser.Scene {
 				if (throwY > -1000) {
 				throwY -= throwV
 				this.aimLabelY.add(-10)
-				this.aimer.clear(true);
+				this.aimer.clear(true, true);
 				this.aimer = this.createAimer()
 				}
 			}
@@ -140,7 +138,7 @@ export default class GameScene extends Phaser.Scene {
 
 				//balltime = 450;
 				balltime = Math.abs(throwY)/3;
-				if (throwX < -20) {
+				if (throwX < -20 || throwX >= 700) {
 					balltime = balltime / 2;
 				}
 				if (balltime < 100) {
@@ -152,20 +150,20 @@ export default class GameScene extends Phaser.Scene {
 			if (balltime > 0) {
 				balltime = balltime -1
 			} else if (balltime <= 0) {
-				this.bombSpawner.group.clear(true);
+				this.bombSpawner.group.clear(true, true);
 				aimTime = true;
 				this.aimer.setTint(0x00ff00);
-				this.blockade.clear(true);
+				this.blockade.clear(true, true);
 				this.blockade = this.createBlock();
 				this.physics.add.collider(this.bombSpawner.group, this.blockade)
 			}
 
 			//Dev
 			if (this.cursors.shift.isDown) {
-				this.bombSpawner.group.clear(true);
+				this.bombSpawner.group.clear(true, true);
 				aimTime = true;
 				this.aimer.setTint(0x00ff00);
-				this.blockade.clear(true);
+				this.blockade.clear(true, true);
 				this.blockade = this.createBlock();
 				this.physics.add.collider(this.bombSpawner.group, this.blockade)
 			}
@@ -180,6 +178,7 @@ export default class GameScene extends Phaser.Scene {
 			setXY: { x: (Phaser.Math.Between(50, 750)), y: (Phaser.Math.Between(120, 530))/*, stepX: 70*/}
 		})
 
+		stars.setDepth(5);
 		return stars
 	}
 
@@ -200,6 +199,8 @@ export default class GameScene extends Phaser.Scene {
 	{
 		//playerAAA.disableBody(true, true)
 		star.disableBody(true, true)
+		starsTaken += 1;
+		//console.log(starsTaken + " Stars Taken in " + shots + " Shots");
 
         this.scoreLabel.add(10)
 		
@@ -227,7 +228,7 @@ export default class GameScene extends Phaser.Scene {
 		const block = this.physics.add.staticGroup()
 
 		block.create(Phaser.Math.Between(30, 750), (Phaser.Math.Between(120, 450)), BLOCK_KEY).setScale(0.2).refreshBody();
-		block.rotate(Phaser.Math.Between(0, 10));
+		block.rotate(Phaser.Math.Between(0, 6));
 		block.setTint(0xFF00FF);
 		block.setDepth(4);
         return block;
