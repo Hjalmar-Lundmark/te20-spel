@@ -140,6 +140,9 @@ export default class GameScene extends Phaser.Scene {
 
 				//balltime = 450;
 				balltime = Math.abs(throwY)/3;
+				if (throwX < -20) {
+					balltime = balltime / 2;
+				}
 				if (balltime < 100) {
 					balltime = 100;
 				}

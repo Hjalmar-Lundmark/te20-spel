@@ -5,10 +5,13 @@ Följ pingvinens äventyr medan han kastar snöbollar mot stjärnorna.
 
 ![Screenshot of the game](/public/assets/Screenshot.jpg "Screenshot")
 
-Kodat i Phaser 3. 
+Kodat i Phaser 3. ~~Stjält~~ *Lånat* grafik från förra årets julspel, mer specifikt [Emil Åsbringers spel](https://github.com/emilasbringer/phasertilemap) och [Oliver Lundqvists spel](https://github.com/NTIG-Umea/wu2-spel-Snubb). 
 
+Grunden till detta repo och spel kommer ifrån en [tutorial](https://blog.ourcade.co/posts/2020/make-first-phaser-3-game-modern-javascript-part5/) jag har följt och sedan byggd på. Tutorialen är bra för sådana här spel där kameran inte rör på sig men jag skulle rekommendera någon annan tutorial om man vill något annat. 
 
-## Ignorera texten under
+Spelet går att spela på [https://test-spelsitedemo.netlify.app/](https://test-spelsitedemo.netlify.app/). 
+
+###### Ignorera texten under
 
 # Phaser 3 + Vite.js Template
 > Make Phaser 3 games with modern frontend tooling.
