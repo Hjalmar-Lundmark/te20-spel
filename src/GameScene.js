@@ -10,6 +10,7 @@ import BombSpawner from './BombSpawner'
 const GROUND_KEY = 'ground'
 const DUDE_KEY = 'dude'
 const STAR_KEY = 'star'
+const AIM_KEY = 'aim'
 const BOMB_KEY = 'bomb'
 const BLOCK_KEY = 'block'
 let aimTime = true
@@ -43,6 +44,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('sky', 'assets/Background2.png');
     this.load.image(GROUND_KEY, 'assets/platform.png');
     this.load.image(STAR_KEY, 'assets/star.png')
+	this.load.image(AIM_KEY, 'assets/circle.png')
     this.load.image(BOMB_KEY, 'assets/snowball.png')
 	this.load.image(BLOCK_KEY, 'assets/platform2.png');
 
@@ -181,7 +183,7 @@ export default class GameScene extends Phaser.Scene {
 	createAimer()
 	{
 		const sight = this.physics.add.staticGroup({
-			key: STAR_KEY,
+			key: AIM_KEY,
 			repeat: 4,
 			setXY: { x: this.player.x, y: this.player.y, stepX: throwX/40, stepY: throwY/40}
 			//setXY: { x: this.player.x + throwX/35, y: this.player.y + throwY/35, stepX: throwX/40, stepY: throwY/40}
@@ -222,7 +224,7 @@ export default class GameScene extends Phaser.Scene {
 		const block = this.physics.add.staticGroup()
 
 		block.create(Phaser.Math.Between(30, 750), (Phaser.Math.Between(120, 450)), BLOCK_KEY).setScale(0.2).refreshBody();
-		block.rotate(Phaser.Math.Between(1, 5));
+		block.rotate(Phaser.Math.Between(0, 10));
 		block.setTint(0xFF00FF);
 		block.setDepth(4);
         return block;
