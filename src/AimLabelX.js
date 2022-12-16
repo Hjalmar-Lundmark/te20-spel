@@ -24,6 +24,6 @@ export default class AimLabelX extends Phaser.GameObjects.Text
 
 	updateScoreText2()
 	{
-		this.setText(formatScore2(this.score))
+		this.setText(formatScore2(Math.abs(this.score)))
 	}
 }

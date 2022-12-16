@@ -1,3 +1,15 @@
+# Julspel 2022
+## Av Hjalmar Lundmark
+
+Följ pingvinens äventyr medan han kastar snöbollar mot stjärnorna. 
+
+![Screenshot of the game](/public/assets/Screenshot.jpg "Screenshot")
+
+Kodat i Phaser 3. 
+
+
+## Ignorera texten under
+
 # Phaser 3 + Vite.js Template
 > Make Phaser 3 games with modern frontend tooling.
 

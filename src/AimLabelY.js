@@ -8,7 +8,7 @@ export default class AimLabelY extends Phaser.GameObjects.Text
 	{
 		super(scene, x, y, formatScore2(score), style)
 
-		this.score = score
+		this.score = score;
 	}
 
 	setScore2(score)
@@ -24,6 +24,6 @@ export default class AimLabelY extends Phaser.GameObjects.Text
 
 	updateScoreText2()
 	{
-		this.setText(formatScore2(this.score))
+		this.setText(formatScore2(Math.abs(this.score)))
 	}
 }
