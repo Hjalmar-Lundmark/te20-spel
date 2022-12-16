@@ -200,7 +200,7 @@ export default class GameScene extends Phaser.Scene {
 		//playerAAA.disableBody(true, true)
 		star.disableBody(true, true)
 		starsTaken += 1;
-		//console.log(starsTaken + " Stars Taken in " + shots + " Shots");
+		console.log(starsTaken + " Stars Taken in " + shots + " Shots");
 
         this.scoreLabel.add(10)
 		
